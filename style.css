@@ -1,0 +1,55 @@
+body{
+    background: url(Background.jpg);
+    background-position-x: 50%;
+    background-position-y: 20%;
+    background-repeat: no-repeat;
+
+}
+.STM_btn{
+    color: white;
+    text-decoration: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin: 4vh;
+}
+#message-container{
+    position: fixed;
+    top: 0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    background:rgba(195, 195, 195, 0.6);
+    padding: 4vh;
+    display: none;
+    animation: FadeIn 1s;
+    backdrop-filter: blur(10px);
+}
+@keyframes FadeIn {
+    from {opacity: 0;}
+    to { opacity:1;}
+}
+.chats-container{
+    border-radius: 2.5vh;
+    width: 90vw;
+    height: 78vh;
+    background: rgba(255, 255, 255,0.6);
+    backdrop-filter: blur(5px);
+}
+.input-container{
+    border-radius: 2.5vh;
+    width: 90vw;
+    height: 9vh;
+    margin-top: 4vh;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(5px);
+}
+#user-input{
+    padding: 1vh;
+    border-radius: 1vh;
+    font-size: 5vh;
+    width: 85vh;
+    height: 8.5vh;
+    border: 2px solid #111;
+    
+}

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glasses OS Core v0.1</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="FrontEnd.js"></script>
+</head>
+<body>
+    <a href="#" onclick="ShowTextMode()" class="STM_btn fa fa-clone"></a>
+    <div id="message-container">
+        <div class="chats-container"></div>
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Type a message..." onkeyup="handleInput(event)" />
+        </div>
+    </div>
+</body>
+</html>
