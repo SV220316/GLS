@@ -8,10 +8,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="FrontEnd.js"></script>
 </head>
-<body>
+<body onload="Start_Logic()">
     <a href="#" onclick="ShowTextMode()" class="STM_btn fa fa-clone"></a>
+    <div class="front-face">
+        <img src="memoji.jpg" id="avatar">
+        <h1> GlassOS Beta v0.1 </h1>
+        <h3> Programming: Derek Ronquillo </h3>
+        <h2> AI Core Development</h2>
+        <h2> EVT Early Stage</h2>
+        </div>
+    
     <div id="message-container">
-        <div class="chats-container"></div>
+        <div class="chats-container">
+            <div class="messages" id="messages"></div>
+        </div>
         <div class="input-container">
             <input type="text" id="user-input" placeholder="Type a message..." onkeyup="handleInput(event)" />
         </div>
