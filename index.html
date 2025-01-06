@@ -15,7 +15,7 @@
       justify-content: center;
       background-color: #000;
       color: white;
-      transform: rotate(90deg); /* Make sure to display in landscape mode */
+      transform: rotate(90deg); /* Ensure it's landscape */
     }
 
     #floating-ui {
@@ -68,20 +68,30 @@
 
     // Function to update the UI element's position based on head movement
     function updateUIPosition(gamma, beta) {
-      // Adjust the movement calculation
+      // Calculate the movement offsets based on gamma (Z-axis) and beta (X-axis)
       const offsetX = (beta / 90) * window.innerWidth * marginLimit;  // Small horizontal movement based on Beta
       const offsetY = (gamma / 90) * window.innerHeight * marginLimit; // Small vertical movement based on Gamma
+
+      // Debugging outputs to understand what's happening
+      console.log('offsetX:', offsetX, 'offsetY:', offsetY);
 
       // Calculate new position for the UI element
       let newX = defaultX - offsetX; // If you tilt left, move the UI to the right
       let newY = defaultY - offsetY; // If you tilt up, move the UI down
 
+      // Debugging outputs to ensure correct calculations
+      console.log('newX:', newX, 'newY:', newY);
+
       // Prevent the UI from going out of bounds
       newX = Math.max(0, Math.min(newX, window.innerWidth - floatingUI.offsetWidth));
       newY = Math.max(0, Math.min(newY, window.innerHeight - floatingUI.offsetHeight));
 
+      // Set new position of the floating UI element
       floatingUI.style.left = `${newX}px`;
       floatingUI.style.top = `${newY}px`;
+
+      // Debugging output for position updates
+      console.log('UI positioned at:', newX, newY);
     }
 
     // Listen for device orientation changes
