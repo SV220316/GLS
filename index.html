@@ -1,30 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glasses OS Core v0.1</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="FrontEnd.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>360-degree View</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #000;
+    }
+
+    .container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .frame {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 255, 255, 0.8);
+      transform-origin: center;
+      transform: translate(-50%, -50%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      color: #000;
+    }
+
+    .object {
+      text-align: center;
+    }
+  </style>
 </head>
-<body onload="Start_Logic()">
-    <a href="#" onclick="ShowTextMode()" class="STM_btn fa fa-clone"></a>
-    <div class="front-face">
-        <img src="memoji.jpg" id="avatar">
-        <h1> GlassOS Beta v0.1 </h1>
-        <h3> Programming: Derek Ronquillo </h3>
-        <h2> AI Core Development</h2>
-        <h2> EVT Early Stage</h2>
-        </div>
-    
-    <div id="message-container">
-        <div class="chats-container">
-            <div class="messages" id="messages"></div>
-        </div>
-        <div class="input-container">
-            <input type="text" id="user-input" placeholder="Type a message..." onkeyup="handleInput(event)" />
-        </div>
+<body>
+  <div class="container">
+    <div class="frame">
+      <div class="object">Your Object Here</div>
     </div>
+  </div>
+
+  <script>
+    let x = 0; // Store x-axis rotation
+    let y = 0; // Store y-axis rotation
+
+    window.addEventListener('deviceorientation', (event) => {
+      // Get the device's orientation in degrees
+      x = event.beta; // Tilt forward/backward (range: -180 to 180)
+      y = event.gamma; // Tilt left/right (range: -90 to 90)
+
+      // Update the rotation of the frame
+      document.querySelector('.frame').style.transform = `translate(-50%, -50%) rotateX(${x}deg) rotateY(${y}deg)`;
+    });
+  </script>
 </body>
 </html>
