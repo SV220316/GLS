@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Orientation Live Data</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+      margin: 0;
+      flex-direction: column;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .data {
+      font-size: 30px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Device Orientation Data (Beta & Gamma)</h1>
+  <div class="data">
+    <p id="beta">Beta: 0</p>
+    <p id="gamma">Gamma: 0</p>
+  </div>
+
+  <script>
+    // Function to handle device orientation event
+    function updateOrientation(event) {
+      const beta = event.beta || 0;   // Forward/backward tilt (X axis)
+      const gamma = event.gamma || 0; // Left/right tilt (Y axis)
+      
+      // Update the displayed values
+      document.getElementById('beta').textContent = `Beta: ${beta.toFixed(2)}`;
+      document.getElementById('gamma').textContent = `Gamma: ${gamma.toFixed(2)}`;
+    }
+
+    // Add event listener for device orientation
+    window.addEventListener('deviceorientation', updateOrientation);
+  </script>
+
+</body>
+</html>
