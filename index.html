@@ -92,6 +92,23 @@
         vrEnabled = true;
         enableVRBtn.textContent = 'Disable VR'; // Change button text
         console.log('VR enabled');
+
+        // Request permission to access device orientation (for Chrome on Android)
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+          DeviceOrientationEvent.requestPermission()
+            .then(response => {
+              if (response === 'granted') {
+                console.log('Permission granted for device orientation');
+              } else {
+                console.log('Permission denied for device orientation');
+              }
+            })
+            .catch(error => {
+              console.error('Error requesting permission:', error);
+            });
+        } else {
+          console.log('No permission request needed (non-Android)');
+        }
       } else {
         vrEnabled = false;
         enableVRBtn.textContent = 'Enable VR'; // Reset button text
