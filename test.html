@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Full Tilt Calculation</title>
+  <title>Smooth Box Movement</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -16,49 +16,56 @@
       background-color: #f5f5f5;
     }
 
-    .container {
-      text-align: center;
-      padding: 20px;
+    #container {
+      position: relative;
+      width: 100%;
+      height: 100%;
       background-color: #fff;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #box {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background-color: #3498db;
       border-radius: 10px;
-      width: 300px;
-    }
-
-    .value {
-      font-size: 24px;
-      margin: 10px 0;
-      font-weight: bold;
-    }
-
-    .label {
-      font-size: 18px;
-      color: #555;
+      transition: transform 0.1s ease-out; /* Smooth transition for the movement */
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="label">Device Tilt Calculations</div>
-    <div class="value" id="horizontalValue">Horizontal: 0°</div>
-    <div class="value" id="verticalValue">Vertical: 0°</div>
+
+  <div id="container">
+    <div id="box"></div>
   </div>
 
   <script>
+    let lastX = 0, lastY = 0;
+
     window.addEventListener("deviceorientation", (event) => {
-      // Get alpha, beta, and gamma values
-      const alpha = event.alpha;    // Rotation around Z-axis (spin)
-      const beta = event.beta;      // Tilt around X-axis (up/down)
-      const gamma = event.gamma;    // Tilt around Y-axis (left/right)
+      const gamma = event.gamma; // Left-right tilt (horizontal)
+      const beta = event.beta;   // Up-down tilt (vertical)
 
-      // Calculate the final horizontal and vertical values
-      const horizontal = (gamma + alpha) / 2; // Combining horizontal and spin effects
-      const vertical = (beta + alpha) / 2;    // Combining vertical and spin effects
+      // Adjust these scaling factors to control how fast the box moves
+      const scalingFactorX = 1.5; // Increase for faster horizontal movement
+      const scalingFactorY = 1.5; // Increase for faster vertical movement
 
-      // Display the calculated values
-      document.getElementById("horizontalValue").textContent = `Horizontal: ${horizontal.toFixed(2)}°`;
-      document.getElementById("verticalValue").textContent = `Vertical: ${vertical.toFixed(2)}°`;
+      // Calculate the box's new position based on tilt
+      const moveX = -gamma * scalingFactorX;  // Left-right movement
+      const moveY = beta * scalingFactorY;    // Up-down movement
+
+      // Get the container's width and height for centering
+      const containerWidth = window.innerWidth;
+      const containerHeight = window.innerHeight;
+
+      // Set new position for the box (smoothly)
+      const newX = containerWidth / 2 + moveX - 50; // Adjusted by 50 to center the box
+      const newY = containerHeight / 2 - moveY - 50; // Adjusted by 50 to center the box
+
+      // Update the box's position smoothly
+      document.getElementById("box").style.transform = `translate(${newX}px, ${newY}px)`;
     });
   </script>
+
 </body>
 </html>
