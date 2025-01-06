@@ -45,6 +45,22 @@
     .object {
       text-align: center;
     }
+
+    #enableVRBtn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 10px 20px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #enableVRBtn:active {
+      background-color: rgba(0, 0, 0, 0.9);
+    }
   </style>
 </head>
 <body>
@@ -52,19 +68,50 @@
     <div class="frame">
       <div class="object">Your Object Here</div>
     </div>
+    <button id="enableVRBtn">Enable VR</button>
   </div>
 
   <script>
     let x = 0; // Store x-axis rotation
     let y = 0; // Store y-axis rotation
+    let vrEnabled = false; // Track VR status
 
+    const enableVRBtn = document.getElementById('enableVRBtn');
+    const frame = document.querySelector('.frame');
+
+    // Check for deviceorientation support
+    if (window.DeviceOrientationEvent) {
+      console.log('DeviceOrientationEvent is supported');
+    } else {
+      console.log('DeviceOrientationEvent is not supported on this device.');
+    }
+
+    // Button click event to toggle VR feature
+    enableVRBtn.addEventListener('click', () => {
+      if (!vrEnabled) {
+        vrEnabled = true;
+        enableVRBtn.textContent = 'Disable VR'; // Change button text
+        console.log('VR enabled');
+      } else {
+        vrEnabled = false;
+        enableVRBtn.textContent = 'Enable VR'; // Reset button text
+        console.log('VR disabled');
+      }
+    });
+
+    // Listen to device orientation when VR is enabled
     window.addEventListener('deviceorientation', (event) => {
-      // Get the device's orientation in degrees
-      x = event.beta; // Tilt forward/backward (range: -180 to 180)
-      y = event.gamma; // Tilt left/right (range: -90 to 90)
-
-      // Update the rotation of the frame
-      document.querySelector('.frame').style.transform = `translate(-50%, -50%) rotateX(${x}deg) rotateY(${y}deg)`;
+      if (vrEnabled) {
+        if (event.beta !== null && event.gamma !== null) {
+          x = event.beta; // Tilt forward/backward (range: -180 to 180)
+          y = event.gamma; // Tilt left/right (range: -90 to 90)
+          
+          console.log(`Device Orientation: x=${x}, y=${y}`); // Debugging output
+          
+          // Update the rotation of the frame
+          frame.style.transform = `translate(-50%, -50%) rotateX(${x}deg) rotateY(${y}deg)`;
+        }
+      }
     });
   </script>
 </body>
