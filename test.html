@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Orientation Tester</title>
+  <title>Full Tilt Calculation</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -39,23 +39,25 @@
 </head>
 <body>
   <div class="container">
-    <div class="label">Device Orientation</div>
-    <div class="value" id="alphaValue">Alpha: 0°</div>
-    <div class="value" id="betaValue">Beta: 0°</div>
-    <div class="value" id="gammaValue">Gamma: 0°</div>
+    <div class="label">Device Tilt Calculations</div>
+    <div class="value" id="horizontalValue">Horizontal: 0°</div>
+    <div class="value" id="verticalValue">Vertical: 0°</div>
   </div>
 
   <script>
     window.addEventListener("deviceorientation", (event) => {
-      // Get alpha (Z-axis), beta (X-axis), and gamma (Y-axis) values
-      const alpha = event.alpha;   // Rotation around Z-axis (yaw)
-      const beta = event.beta;     // Rotation around X-axis (pitch)
-      const gamma = event.gamma;   // Rotation around Y-axis (roll)
+      // Get alpha, beta, and gamma values
+      const alpha = event.alpha;    // Rotation around Z-axis (spin)
+      const beta = event.beta;      // Tilt around X-axis (up/down)
+      const gamma = event.gamma;    // Tilt around Y-axis (left/right)
 
-      // Update the displayed values in real-time
-      document.getElementById("alphaValue").textContent = `Alpha: ${alpha.toFixed(2)}°`;
-      document.getElementById("betaValue").textContent = `Beta: ${beta.toFixed(2)}°`;
-      document.getElementById("gammaValue").textContent = `Gamma: ${gamma.toFixed(2)}°`;
+      // Calculate the final horizontal and vertical values
+      const horizontal = (gamma + alpha) / 2; // Combining horizontal and spin effects
+      const vertical = (beta + alpha) / 2;    // Combining vertical and spin effects
+
+      // Display the calculated values
+      document.getElementById("horizontalValue").textContent = `Horizontal: ${horizontal.toFixed(2)}°`;
+      document.getElementById("verticalValue").textContent = `Vertical: ${vertical.toFixed(2)}°`;
     });
   </script>
 </body>
