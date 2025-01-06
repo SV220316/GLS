@@ -3,59 +3,79 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Head Tracking Box</title>
+  <title>WebXR Head Tracking</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
     body {
-      background-color: #000;
+      margin: 0;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      overflow: hidden;
+      background-color: #000;
     }
-    #trackingBox {
+    #box {
       position: absolute;
       width: 100px;
       height: 100px;
-      background-color: rgba(255, 255, 255, 0.8);
-      border-radius: 10px;
+      background-color: red;
     }
   </style>
 </head>
 <body>
-  <div id="trackingBox"></div>
+  <div id="box"></div>
 
   <script>
-    const trackingBox = document.getElementById("trackingBox");
-    let lastX = 0;
-    let lastY = 0;
+    let xrSession = null;
+    const box = document.getElementById('box');
 
-    // Listen for device orientation changes
-    window.addEventListener("deviceorientation", (event) => {
-      const gamma = event.gamma; // Left/Right tilt
-      const beta = event.beta;   // Up/Down tilt
+    async function startXR() {
+      try {
+        // Check if WebXR is supported
+        if (!navigator.xr) {
+          alert('WebXR not supported on your device.');
+          return;
+        }
 
-      // Mapping the gamma and beta to screen coordinates
-      let newX = window.innerWidth / 2 + gamma * (window.innerWidth / 360);
-      let newY = window.innerHeight / 2 - beta * (window.innerHeight / 180);
+        // Request a session
+        xrSession = await navigator.xr.requestSession('immersive-vr');
+        await xrSession.requestReferenceSpace('local');
+        xrSession.addEventListener('end', onXRSessionEnded);
 
-      // Smooth transition to the new position
-      newX = Math.min(Math.max(newX, 0), window.innerWidth - 100);
-      newY = Math.min(Math.max(newY, 0), window.innerHeight - 100);
+        // Start rendering loop
+        animate();
+      } catch (error) {
+        console.error('Error starting WebXR session:', error);
+      }
+    }
 
-      // Apply the calculated position to the box
-      trackingBox.style.left = `${newX}px`;
-      trackingBox.style.top = `${newY}px`;
+    function onXRSessionEnded() {
+      xrSession = null;
+      alert('WebXR session ended.');
+    }
 
-      // Store the last position for smoothness
-      lastX = newX;
-      lastY = newY;
-    });
+    async function animate() {
+      if (xrSession) {
+        const pose = xrSession.requestPose();
+        const orientation = pose.orientation;
+
+        // Get the device's orientation (rotate box accordingly)
+        if (orientation) {
+          const pitch = orientation.x;
+          const yaw = orientation.y;
+          const roll = orientation.z;
+
+          // Update the box position based on head rotation
+          box.style.transform = `translate(-50%, -50%) rotateX(${pitch * 360}deg) rotateY(${yaw * 360}deg) rotateZ(${roll * 360}deg)`;
+        }
+
+        // Continue the animation loop
+        requestAnimationFrame(animate);
+      }
+    }
+
+    // Add event listener for starting the XR session when the page is loaded
+    window.addEventListener('load', startXR);
   </script>
 </body>
 </html>
