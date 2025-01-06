@@ -1,92 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Full-Screen Video Camera</title>
-  <style>
-    /* Ensure full-screen view for the video */
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-      position: relative;
-    }
-
-    video {
-      position: absolute;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="Core.js" defer></script>    
+    <title>GlassOS Prototype V2</title>
+    <style>
+        #Live_Background {
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
+      z-index: -1;
       height: 100%;
-      object-fit: cover;
+      object-fit: cover; /* Ensures the video covers the full screen without distortion */
     }
-
-    /* Style for the floating fullscreen button */
-    #fullscreen-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: rgba(0, 0, 0, 0.6);
-      color: white;
-      font-size: 18px;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      z-index: 10; /* Ensure it stays above the video */
+    .AI-container{
+        border-radius: 4vh;
+        width: 90vh;
+        height: 55vh;
+        backdrop-filter: blur(7px);
+        background: rgba(255, 255, 255, 0.5);
+        float: right;
     }
-
-    #fullscreen-btn:hover {
-      background-color: rgba(0, 0, 0, 0.8);
-    }
-  </style>
+    </style>
 </head>
-<body>
-
-<video id="video" autoplay></video>
-<button id="fullscreen-btn">Go Fullscreen</button>
-
-<script>
-  // Function to start the camera and display video
-  async function startCamera() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: 'environment', // Use rear camera
-        }
-      });
-
-      const videoElement = document.getElementById('video');
-      videoElement.srcObject = stream;
-
-    } catch (error) {
-      console.error("Error accessing camera: ", error);
-    }
-  }
-
-  // Function to enter fullscreen mode
-  function enterFullscreen() {
-    const videoElement = document.documentElement; // The root HTML element
-
-    if (videoElement.requestFullscreen) {
-      videoElement.requestFullscreen();
-    } else if (videoElement.mozRequestFullScreen) { // Firefox
-      videoElement.mozRequestFullScreen();
-    } else if (videoElement.webkitRequestFullscreen) { // Chrome, Safari, Opera
-      videoElement.webkitRequestFullscreen();
-    } else if (videoElement.msRequestFullscreen) { // IE/Edge
-      videoElement.msRequestFullscreen();
-    }
-  }
-
-  // Event listener for fullscreen button click
-  document.getElementById('fullscreen-btn').addEventListener('click', enterFullscreen);
-
-  // Start the camera as soon as the page loads
-  window.onload = startCamera;
-</script>
-
+<body onload="Start_Logic()">
+    <div class="Boot_Screen"></div>
+    <div class="Home_Screen">
+        <!--- Video Background --->
+        <video id="Live_Background" autoplay></video>
+        <!--- Apps --->
+        <div class="AI-container">
+            
+        </div>
+    </div>
+    
 </body>
 </html>
