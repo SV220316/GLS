@@ -3,50 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Device Orientation Live Data</title>
+  <title>Full-Screen Video Camera</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #f0f0f0;
+    /* Ensure full-screen view for the video */
+    body, html {
       margin: 0;
-      flex-direction: column;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
     }
-    h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-    .data {
-      font-size: 30px;
-      font-weight: bold;
+    video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Ensures the video covers the full screen without distortion */
     }
   </style>
 </head>
 <body>
 
-  <h1>Device Orientation Data (Beta & Gamma)</h1>
-  <div class="data">
-    <p id="beta">Beta: 0</p>
-    <p id="gamma">Gamma: 0</p>
-  </div>
+<video id="video" autoplay></video>
 
-  <script>
-    // Function to handle device orientation event
-    function updateOrientation(event) {
-      const beta = event.beta || 0;   // Forward/backward tilt (X axis)
-      const gamma = event.gamma || 0; // Left/right tilt (Y axis)
-      
-      // Update the displayed values
-      document.getElementById('beta').textContent = `Beta: ${beta.toFixed(2)}`;
-      document.getElementById('gamma').textContent = `Gamma: ${gamma.toFixed(2)}`;
+<script>
+  // Function to start the camera and display video
+  async function startCamera() {
+    try {
+      // Request access to the rear camera
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: 'environment', // Use rear camera
+          // We can remove ideal resolutions to let the browser select the best available
+        }
+      });
+
+      // Set the video source to the camera stream
+      const videoElement = document.getElementById('video');
+      videoElement.srcObject = stream;
+
+    } catch (error) {
+      console.error("Error accessing camera: ", error);
     }
+  }
 
-    // Add event listener for device orientation
-    window.addEventListener('deviceorientation', updateOrientation);
-  </script>
+  // Start the camera as soon as the page loads
+  window.onload = startCamera;
+</script>
 
 </body>
 </html>
