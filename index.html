@@ -2,109 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Smart Glasses UI Prototype</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Orientation Live Data</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body, html {
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-      background: #000;
-    }
-
-    .container {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      perspective: 1000px;
-    }
-
-    .background {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url('https://your-image-url.jpg'); /* Simulated background (can be a camera feed) */
-      background-size: cover;
-      background-position: center;
-      z-index: -1;
-    }
-
-    .floating-ui {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 200px;
-      height: 200px;
-      background-color: rgba(255, 255, 255, 0.9);
-      border-radius: 15px;
-      transform: translate(-50%, -50%);
-      text-align: center;
+    body {
+      font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      color: #000;
-      font-size: 24px;
-      font-weight: bold;
+      height: 100vh;
+      background-color: #f0f0f0;
+      margin: 0;
+      flex-direction: column;
     }
-
-    /* Style for immersive experience */
-    #immersive-mode {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      padding: 10px 20px;
-      background-color: rgba(0, 0, 0, 0.7);
-      color: white;
-      border: none;
-      font-size: 16px;
-      cursor: pointer;
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .data {
+      font-size: 30px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="background"></div> <!-- Simulated background -->
-    <div class="floating-ui" id="uiElement">UI Element</div>
-    <button id="immersive-mode">Enter Immersive Mode</button>
+
+  <h1>Device Orientation Data (Beta & Gamma)</h1>
+  <div class="data">
+    <p id="beta">Beta: 0</p>
+    <p id="gamma">Gamma: 0</p>
   </div>
 
   <script>
-    const floatingUI = document.getElementById('uiElement');
-    const immersiveButton = document.getElementById('immersive-mode');
+    // Function to handle device orientation event
+    function updateOrientation(event) {
+      const beta = event.beta || 0;   // Forward/backward tilt (X axis)
+      const gamma = event.gamma || 0; // Left/right tilt (Y axis)
+      
+      // Update the displayed values
+      document.getElementById('beta').textContent = `Beta: ${beta.toFixed(2)}`;
+      document.getElementById('gamma').textContent = `Gamma: ${gamma.toFixed(2)}`;
+    }
 
-    let isImmersive = false;
-    let x = 0, y = 0;
-
-    // Toggle immersive mode
-    immersiveButton.addEventListener('click', () => {
-      isImmersive = !isImmersive;
-      immersiveButton.textContent = isImmersive ? 'Exit Immersive Mode' : 'Enter Immersive Mode';
-      if (isImmersive) {
-        document.documentElement.requestFullscreen();
-      } else {
-        document.exitFullscreen();
-      }
-    });
-
-    // Listen for device orientation events to track head movements
-    window.addEventListener('deviceorientation', (event) => {
-      if (event.beta !== null && event.gamma !== null) {
-        // For portrait mode: beta (forward/backward tilt) controls y-axis, gamma (left/right tilt) controls x-axis
-        x = event.gamma;
-        y = event.beta;
-
-        // Update the UI element position based on head movement
-        floatingUI.style.transform = `translate(-50%, -50%) translateX(${x}px) translateY(${y}px)`;
-      }
-    });
+    // Add event listener for device orientation
+    window.addEventListener('deviceorientation', updateOrientation);
   </script>
+
 </body>
 </html>
