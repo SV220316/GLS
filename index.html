@@ -1,40 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <script src="Core.js" defer></script>    
-    <title>GlassOS Prototype V2</title>
-    <style>
-        #Live_Background {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: -1;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Floating UI - VR Experience</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
       height: 100%;
-      object-fit: cover; /* Ensures the video covers the full screen without distortion */
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #000;
+      color: white;
+      transform: rotate(90deg); /* Make sure to display in landscape mode */
     }
-    .AI-container{
-        border-radius: 4vh;
-        width: 90vh;
-        height: 55vh;
-        backdrop-filter: blur(7px);
-        background: rgba(255, 255, 255, 0.5);
-        float: right;
+
+    #floating-ui {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background-color: rgba(0, 0, 255, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 20px;
+      font-size: 16px;
+      text-align: center;
+      color: white;
+      transition: transform 0.1s ease-out;
     }
-    </style>
+
+    #info {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 24px;
+      z-index: 10;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
 </head>
-<body onload="Start_Logic()">
-    <div class="Boot_Screen"></div>
-    <div class="Home_Screen">
-        <!--- Video Background --->
-        <video id="Live_Background" autoplay></video>
-        <!--- Apps --->
-        <div class="AI-container">
-            <a href="#" id="fullscreen-btn"> CS </a>
-        </div>
-    </div>
-    
+<body>
+
+  <div id="info">
+    <p>Gamma (Z-axis rotation): <span id="gamma"></span></p>
+    <p>Beta (X-axis rotation): <span id="beta"></span></p>
+  </div>
+
+  <div id="floating-ui">Floating UI</div>
+
+  <script>
+    const floatingUI = document.getElementById("floating-ui");
+    const gammaElement = document.getElementById("gamma");
+    const betaElement = document.getElementById("beta");
+
+    // Default position: right-center
+    let defaultX = window.innerWidth * 0.75;
+    let defaultY = window.innerHeight / 2;
+
+    // Margin limits to simulate small movements
+    const marginLimit = 0.1; // Adjust this value to control how much margin you want to apply
+
+    // Function to update the UI element's position based on head movement
+    function updateUIPosition(gamma, beta) {
+      // Adjust the movement calculation
+      const offsetX = (beta / 90) * window.innerWidth * marginLimit;  // Small horizontal movement based on Beta
+      const offsetY = (gamma / 90) * window.innerHeight * marginLimit; // Small vertical movement based on Gamma
+
+      // Calculate new position for the UI element
+      let newX = defaultX - offsetX; // If you tilt left, move the UI to the right
+      let newY = defaultY - offsetY; // If you tilt up, move the UI down
+
+      // Prevent the UI from going out of bounds
+      newX = Math.max(0, Math.min(newX, window.innerWidth - floatingUI.offsetWidth));
+      newY = Math.max(0, Math.min(newY, window.innerHeight - floatingUI.offsetHeight));
+
+      floatingUI.style.left = `${newX}px`;
+      floatingUI.style.top = `${newY}px`;
+    }
+
+    // Listen for device orientation changes
+    window.addEventListener('deviceorientation', function(event) {
+      const gamma = event.gamma;  // Z-axis rotation (left-right tilt)
+      const beta = event.beta;    // X-axis rotation (up-down tilt)
+
+      // Update Gamma and Beta values on the UI
+      gammaElement.textContent = gamma.toFixed(2);
+      betaElement.textContent = beta.toFixed(2);
+
+      // Update the floating UI position
+      updateUIPosition(gamma, beta);
+    });
+  </script>
+
 </body>
 </html>
