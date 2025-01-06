@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>360-degree VR View</title>
+  <title>360-degree VR Object Position</title>
   <style>
     * {
       margin: 0;
@@ -49,7 +49,7 @@
       height: 100px;
       background-color: rgba(255, 255, 255, 0.8);
       transform-origin: center;
-      transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg);
+      transform: translate(-50%, -50%);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -99,6 +99,7 @@
     // Initial position of the object (can be adjusted)
     let objectPositionX = 0; // Initial horizontal position
     let objectPositionY = 0; // Initial vertical position
+    let objectPositionZ = 0; // Initial depth (distance from user)
 
     // Button click event to toggle VR feature
     enableVRBtn.addEventListener('click', () => {
@@ -140,11 +141,12 @@
           console.log(`Device Orientation: x=${x}, y=${y}`); // Debugging output
           
           // Calculate new object position based on head movement
-          objectPositionX = (y / 90) * 200; // Scale movement to the left/right
-          objectPositionY = (x / 90) * 100; // Scale movement for up/down (optional)
+          objectPositionX = (y / 90) * 200; // Move left/right based on gamma
+          objectPositionY = (x / 90) * 100; // Move up/down based on beta
+          objectPositionZ = 500 - (Math.abs(y) * 2); // Adjust depth based on gamma (closer or further)
 
           // Update the frame's position (move object horizontally and vertically)
-          frame.style.transform = `translate(-50%, -50%) rotateX(${x}deg) rotateY(${y}deg) translateX(${objectPositionX}px) translateY(${objectPositionY}px)`;
+          frame.style.transform = `translate(-50%, -50%) translateX(${objectPositionX}px) translateY(${objectPositionY}px) translateZ(${objectPositionZ}px)`;
         }
       }
     });
