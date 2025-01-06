@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>360-degree VR Object Position</title>
   <style>
     * {
@@ -18,6 +18,7 @@
       justify-content: center;
       align-items: center;
       background-color: #000;
+      overflow: hidden;
     }
 
     .container {
@@ -76,6 +77,21 @@
 
     #enableVRBtn:active {
       background-color: rgba(0, 0, 0, 0.9);
+    }
+
+    /* Ensure responsiveness for both portrait and landscape */
+    @media (orientation: landscape) {
+      .frame {
+        width: 150px;
+        height: 150px;
+      }
+    }
+
+    @media (orientation: portrait) {
+      .frame {
+        width: 100px;
+        height: 100px;
+      }
     }
   </style>
 </head>
