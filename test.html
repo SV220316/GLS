@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apple Vision Pro Inspired UI</title>
+    <title>VR UI with Enhanced Orientation</title>
     <style>
         body {
             margin: 0;
@@ -27,7 +27,7 @@
             align-items: center;
             font-size: 24px;
             color: #fff;
-            transition: transform 0.2s ease, background 0.2s ease;
+            transition: transform 0.1s ease, background 0.2s ease;
         }
 
         #floating-ui:hover {
@@ -42,14 +42,14 @@
         const floatingUI = document.getElementById('floating-ui');
 
         // Default position
-        let defaultX = window.innerWidth / 2;
-        let defaultY = window.innerHeight / 2;
+        const defaultX = window.innerWidth / 2;
+        const defaultY = window.innerHeight / 2;
 
         // Update the position of the floating UI element based on device orientation
         function updatePosition(event) {
             const { alpha, beta, gamma } = event;
 
-            // Calculate new position based on head movement
+            // Normalize the values to a range that fits the screen dimensions
             const x = defaultX + (gamma / 90) * (window.innerWidth / 2);
             const y = defaultY - (beta / 90) * (window.innerHeight / 2);
 
@@ -59,6 +59,13 @@
 
         // Listen for device orientation changes
         window.addEventListener('deviceorientation', updatePosition);
+
+        // Optional: Handle the case where the device orientation is not supported
+        window.addEventListener('deviceorientation', (event) => {
+            if (event.alpha === null || event.beta === null || event.gamma === null) {
+                alert("Device orientation not supported.");
+            }
+        });
     </script>
 </body>
 </html>
