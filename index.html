@@ -11,34 +11,53 @@
       padding: 0;
       height: 100%;
       overflow: hidden;
+      position: relative;
     }
+
     video {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Ensures the video covers the full screen without distortion */
+      object-fit: cover;
+    }
+
+    /* Style for the floating fullscreen button */
+    #fullscreen-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: rgba(0, 0, 0, 0.6);
+      color: white;
+      font-size: 18px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 10; /* Ensure it stays above the video */
+    }
+
+    #fullscreen-btn:hover {
+      background-color: rgba(0, 0, 0, 0.8);
     }
   </style>
 </head>
 <body>
 
 <video id="video" autoplay></video>
+<button id="fullscreen-btn">Go Fullscreen</button>
 
 <script>
   // Function to start the camera and display video
   async function startCamera() {
     try {
-      // Request access to the rear camera
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: 'environment', // Use rear camera
-          // We can remove ideal resolutions to let the browser select the best available
         }
       });
 
-      // Set the video source to the camera stream
       const videoElement = document.getElementById('video');
       videoElement.srcObject = stream;
 
@@ -46,6 +65,24 @@
       console.error("Error accessing camera: ", error);
     }
   }
+
+  // Function to enter fullscreen mode
+  function enterFullscreen() {
+    const videoElement = document.documentElement; // The root HTML element
+
+    if (videoElement.requestFullscreen) {
+      videoElement.requestFullscreen();
+    } else if (videoElement.mozRequestFullScreen) { // Firefox
+      videoElement.mozRequestFullScreen();
+    } else if (videoElement.webkitRequestFullscreen) { // Chrome, Safari, Opera
+      videoElement.webkitRequestFullscreen();
+    } else if (videoElement.msRequestFullscreen) { // IE/Edge
+      videoElement.msRequestFullscreen();
+    }
+  }
+
+  // Event listener for fullscreen button click
+  document.getElementById('fullscreen-btn').addEventListener('click', enterFullscreen);
 
   // Start the camera as soon as the page loads
   window.onload = startCamera;
