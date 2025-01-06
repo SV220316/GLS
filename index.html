@@ -105,8 +105,8 @@
   </div>
 
   <script>
-    let x = 0; // Store x-axis rotation (forward/backward tilt)
-    let y = 0; // Store y-axis rotation (left/right tilt)
+    let x = 0; // Store x-axis rotation (left/right tilt)
+    let y = 0; // Store y-axis rotation (forward/backward tilt)
     let vrEnabled = false; // Track VR status
 
     const enableVRBtn = document.getElementById('enableVRBtn');
@@ -151,14 +151,21 @@
     window.addEventListener('deviceorientation', (event) => {
       if (vrEnabled) {
         if (event.beta !== null && event.gamma !== null) {
-          x = event.beta; // Tilt forward/backward (range: -180 to 180)
-          y = event.gamma; // Tilt left/right (range: -90 to 90)
+          // Check the orientation and swap the values accordingly for landscape mode
+          if (window.innerHeight < window.innerWidth) { // Landscape mode
+            // In landscape, swap x and y for correct movement behavior
+            x = event.gamma; // Tilt left/right (range: -90 to 90)
+            y = event.beta; // Tilt forward/backward (range: -180 to 180)
+          } else { // Portrait mode (no need to swap)
+            x = event.beta; // Tilt forward/backward (range: -180 to 180)
+            y = event.gamma; // Tilt left/right (range: -90 to 90)
+          }
           
           console.log(`Device Orientation: x=${x}, y=${y}`); // Debugging output
           
           // Calculate new object position based on head movement
-          objectPositionX = (y / 90) * 200; // Move left/right based on gamma
-          objectPositionY = (x / 90) * 100; // Move up/down based on beta
+          objectPositionX = (y / 90) * 200; // Move left/right based on gamma (y-axis)
+          objectPositionY = (x / 90) * 100; // Move up/down based on beta (x-axis)
           objectPositionZ = 500 - (Math.abs(y) * 2); // Adjust depth based on gamma (closer or further)
 
           // Update the frame's position (move object horizontally and vertically)
