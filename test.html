@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VR UI with Enhanced Orientation</title>
+    <title>3D UI Element in VR</title>
     <style>
         body {
             margin: 0;
@@ -13,6 +13,7 @@
             justify-content: center;
             align-items: center;
             background-color: #282c34;
+            perspective: 1000px; /* Perspective for 3D effect */
         }
 
         #floating-ui {
@@ -28,11 +29,12 @@
             font-size: 24px;
             color: #fff;
             transition: transform 0.1s ease, background 0.2s ease;
+            transform: translateZ(-2px); /* Position it in front of the user */
         }
 
         #floating-ui:hover {
             background: rgba(255, 255, 255, 0.5);
-            transform: scale(1.05);
+            transform: scale(1.05) translateZ(-2px);
         }
     </style>
 </head>
@@ -41,20 +43,23 @@
     <script>
         const floatingUI = document.getElementById('floating-ui');
 
-        // Default position
-        const defaultX = window.innerWidth / 2;
-        const defaultY = window.innerHeight / 2;
-
         // Update the position of the floating UI element based on device orientation
         function updatePosition(event) {
             const { alpha, beta, gamma } = event;
 
-            // Normalize the values to a range that fits the screen dimensions
-            const x = defaultX + (gamma / 90) * (window.innerWidth / 2);
-            const y = defaultY - (beta / 90) * (window.innerHeight / 2);
+            // Convert degrees to radians
+            const alphaRad = alpha * (Math.PI / 180);
+            const betaRad = beta * (Math.PI / 180);
+            const gammaRad = gamma * (Math.PI / 180);
 
-            // Set the new position
-            floatingUI.style.transform = `translate(${x}px, ${y}px)`;
+            // Calculate the new position based on orientation
+            const distance = 2; // Distance from the camera
+            const x = distance * Math.sin(betaRad) * Math.cos(gammaRad);
+            const y = distance * Math.sin(betaRad) * Math.sin(gammaRad);
+            const z = distance * Math.cos(betaRad);
+
+            // Set the new position in 3D space
+            floatingUI.style.transform = `translate3d(${x * 100}px, ${-y * 100}px, ${-z * 100}px)`;
         }
 
         // Listen for device orientation changes
