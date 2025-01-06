@@ -3,97 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Floating UI - VR Experience</title>
+  <title>Head Tracking Box</title>
   <style>
-    body, html {
+    * {
       margin: 0;
       padding: 0;
-      height: 100%;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      box-sizing: border-box;
+    }
+    body {
       background-color: #000;
-      color: white;
-      transform: rotate(90deg); /* Make sure to display in landscape mode */
-    }
-
-    #floating-ui {
-      position: absolute;
-      width: 150px;
-      height: 150px;
-      background-color: rgba(0, 0, 255, 0.6);
       display: flex;
-      align-items: center;
       justify-content: center;
-      border-radius: 20px;
-      font-size: 16px;
-      text-align: center;
-      color: white;
-      transition: transform 0.1s;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
     }
-
-    #info {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      font-size: 24px;
-      z-index: 10;
-      background-color: rgba(0, 0, 0, 0.5);
-      padding: 10px;
-      border-radius: 5px;
+    #trackingBox {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
-
-  <div id="info">
-    <p>Gamma (Z-axis rotation): <span id="gamma"></span></p>
-    <p>Beta (X-axis rotation): <span id="beta"></span></p>
-  </div>
-
-  <div id="floating-ui">Floating UI</div>
+  <div id="trackingBox"></div>
 
   <script>
-    const floatingUI = document.getElementById("floating-ui");
-    const gammaElement = document.getElementById("gamma");
-    const betaElement = document.getElementById("beta");
-
-    // Default position: right-center
-    let defaultX = window.innerWidth * 0.75;
-    let defaultY = window.innerHeight / 2;
-
-    // Function to update the UI element's position based on head movement
-    function updateUIPosition(gamma, beta) {
-      // Adjust the movement calculation
-      const offsetX = (beta / 90) * window.innerWidth;  // Horizontal movement based on Beta
-      const offsetY = (gamma / 90) * window.innerHeight; // Vertical movement based on Gamma
-
-      // Calculate new position for the UI element
-      let newX = defaultX - offsetX; // If you tilt left, move the UI to the right
-      let newY = defaultY - offsetY; // If you tilt up, move the UI down
-
-      // Prevent the UI from going out of bounds
-      newX = Math.max(0, Math.min(newX, window.innerWidth - floatingUI.offsetWidth));
-      newY = Math.max(0, Math.min(newY, window.innerHeight - floatingUI.offsetHeight));
-
-      floatingUI.style.left = `${newX}px`;
-      floatingUI.style.top = `${newY}px`;
-    }
+    const trackingBox = document.getElementById("trackingBox");
+    let lastX = 0;
+    let lastY = 0;
 
     // Listen for device orientation changes
-    window.addEventListener('deviceorientation', function(event) {
-      const gamma = event.gamma;  // Z-axis rotation (left-right tilt)
-      const beta = event.beta;    // X-axis rotation (up-down tilt)
+    window.addEventListener("deviceorientation", (event) => {
+      const gamma = event.gamma; // Left/Right tilt
+      const beta = event.beta;   // Up/Down tilt
 
-      // Update Gamma and Beta values on the UI
-      gammaElement.textContent = gamma.toFixed(2);
-      betaElement.textContent = beta.toFixed(2);
+      // Mapping the gamma and beta to screen coordinates
+      let newX = window.innerWidth / 2 + gamma * (window.innerWidth / 360);
+      let newY = window.innerHeight / 2 - beta * (window.innerHeight / 180);
 
-      // Update the floating UI position
-      updateUIPosition(gamma, beta);
+      // Smooth transition to the new position
+      newX = Math.min(Math.max(newX, 0), window.innerWidth - 100);
+      newY = Math.min(Math.max(newY, 0), window.innerHeight - 100);
+
+      // Apply the calculated position to the box
+      trackingBox.style.left = `${newX}px`;
+      trackingBox.style.top = `${newY}px`;
+
+      // Store the last position for smoothness
+      lastX = newX;
+      lastY = newY;
     });
   </script>
-
 </body>
 </html>
