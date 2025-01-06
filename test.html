@@ -3,50 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Device Orientation Live Data</title>
+  <title>Orientation Tester</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background-color: #f0f0f0;
-      margin: 0;
-      flex-direction: column;
+      background-color: #f5f5f5;
     }
-    h1 {
+
+    .container {
+      text-align: center;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      width: 300px;
+    }
+
+    .value {
       font-size: 24px;
-      margin-bottom: 20px;
-    }
-    .data {
-      font-size: 30px;
+      margin: 10px 0;
       font-weight: bold;
+    }
+
+    .label {
+      font-size: 18px;
+      color: #555;
     }
   </style>
 </head>
 <body>
-
-  <h1>Device Orientation Data (Beta & Gamma)</h1>
-  <div class="data">
-    <p id="beta">Beta: 0</p>
-    <p id="gamma">Gamma: 0</p>
+  <div class="container">
+    <div class="label">Device Orientation</div>
+    <div class="value" id="alphaValue">Alpha: 0°</div>
+    <div class="value" id="betaValue">Beta: 0°</div>
+    <div class="value" id="gammaValue">Gamma: 0°</div>
   </div>
 
   <script>
-    // Function to handle device orientation event
-    function updateOrientation(event) {
-      const beta = event.beta || 0;   // Forward/backward tilt (X axis)
-      const gamma = event.gamma || 0; // Left/right tilt (Y axis)
-      
-      // Update the displayed values
-      document.getElementById('beta').textContent = `Beta: ${beta.toFixed(2)}`;
-      document.getElementById('gamma').textContent = `Gamma: ${gamma.toFixed(2)}`;
-    }
+    window.addEventListener("deviceorientation", (event) => {
+      // Get alpha (Z-axis), beta (X-axis), and gamma (Y-axis) values
+      const alpha = event.alpha;   // Rotation around Z-axis (yaw)
+      const beta = event.beta;     // Rotation around X-axis (pitch)
+      const gamma = event.gamma;   // Rotation around Y-axis (roll)
 
-    // Add event listener for device orientation
-    window.addEventListener('deviceorientation', updateOrientation);
+      // Update the displayed values in real-time
+      document.getElementById("alphaValue").textContent = `Alpha: ${alpha.toFixed(2)}°`;
+      document.getElementById("betaValue").textContent = `Beta: ${beta.toFixed(2)}°`;
+      document.getElementById("gammaValue").textContent = `Gamma: ${gamma.toFixed(2)}°`;
+    });
   </script>
-
 </body>
 </html>
