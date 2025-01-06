@@ -1,76 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D UI Element in VR</title>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #282c34;
-            perspective: 1000px; /* Perspective for 3D effect */
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Floating UI - VR Experience</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #000;
+      color: white;
+      transform: rotate(90deg); /* Make sure to display in landscape mode */
+    }
 
-        #floating-ui {
-            position: absolute;
-            width: 250px;
-            height: 150px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            color: #fff;
-            transition: transform 0.1s ease, background 0.2s ease;
-            transform: translateZ(-2px); /* Position it in front of the user */
-        }
+    #floating-ui {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background-color: rgba(0, 0, 255, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 20px;
+      font-size: 16px;
+      text-align: center;
+      color: white;
+      transition: transform 0.1s;
+    }
 
-        #floating-ui:hover {
-            background: rgba(255, 255, 255, 0.5);
-            transform: scale(1.05) translateZ(-2px);
-        }
-    </style>
+    #info {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 24px;
+      z-index: 10;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
 </head>
 <body>
-    <div id="floating-ui">Floating UI Element</div>
-    <script>
-        const floatingUI = document.getElementById('floating-ui');
 
-        // Update the position of the floating UI element based on device orientation
-        function updatePosition(event) {
-            const { alpha, beta, gamma } = event;
+  <div id="info">
+    <p>Gamma (Z-axis rotation): <span id="gamma"></span></p>
+    <p>Beta (X-axis rotation): <span id="beta"></span></p>
+  </div>
 
-            // Convert degrees to radians
-            const alphaRad = alpha * (Math.PI / 180);
-            const betaRad = beta * (Math.PI / 180);
-            const gammaRad = gamma * (Math.PI / 180);
+  <div id="floating-ui">Floating UI</div>
 
-            // Calculate the new position based on orientation
-            const distance = 2; // Distance from the camera
-            const x = distance * Math.sin(betaRad) * Math.cos(gammaRad);
-            const y = distance * Math.sin(betaRad) * Math.sin(gammaRad);
-            const z = distance * Math.cos(betaRad);
+  <script>
+    const floatingUI = document.getElementById("floating-ui");
+    const gammaElement = document.getElementById("gamma");
+    const betaElement = document.getElementById("beta");
 
-            // Set the new position in 3D space
-            floatingUI.style.transform = `translate3d(${x * 100}px, ${-y * 100}px, ${-z * 100}px)`;
-        }
+    // Default position: right-center
+    let defaultX = window.innerWidth * 0.75;
+    let defaultY = window.innerHeight / 2;
 
-        // Listen for device orientation changes
-        window.addEventListener('deviceorientation', updatePosition);
+    // Function to update the UI element's position based on head movement
+    function updateUIPosition(gamma, beta) {
+      // Adjust the movement calculation
+      const offsetX = (beta / 90) * window.innerWidth;  // Horizontal movement based on Beta
+      const offsetY = (gamma / 90) * window.innerHeight; // Vertical movement based on Gamma
 
-        // Optional: Handle the case where the device orientation is not supported
-        window.addEventListener('deviceorientation', (event) => {
-            if (event.alpha === null || event.beta === null || event.gamma === null) {
-                alert("Device orientation not supported.");
-            }
-        });
-    </script>
+      // Calculate new position for the UI element
+      let newX = defaultX - offsetX; // If you tilt left, move the UI to the right
+      let newY = defaultY - offsetY; // If you tilt up, move the UI down
+
+      // Prevent the UI from going out of bounds
+      newX = Math.max(0, Math.min(newX, window.innerWidth - floatingUI.offsetWidth));
+      newY = Math.max(0, Math.min(newY, window.innerHeight - floatingUI.offsetHeight));
+
+      floatingUI.style.left = `${newX}px`;
+      floatingUI.style.top = `${newY}px`;
+    }
+
+    // Listen for device orientation changes
+    window.addEventListener('deviceorientation', function(event) {
+      const gamma = event.gamma;  // Z-axis rotation (left-right tilt)
+      const beta = event.beta;    // X-axis rotation (up-down tilt)
+
+      // Update Gamma and Beta values on the UI
+      gammaElement.textContent = gamma.toFixed(2);
+      betaElement.textContent = beta.toFixed(2);
+
+      // Update the floating UI position
+      updateUIPosition(gamma, beta);
+    });
+  </script>
+
 </body>
 </html>
